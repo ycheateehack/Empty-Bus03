@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empty-Bus — Configurações e Perfil</title>
+  <style>
+  /* Empty-Bus — Configurações e Perfil */
+  :root {
+    --page: #ece8f3;
+    --sheet: #fff;
+    --row: #f5f2fa;
+    --ink: #1b1630;
+    --muted: #6b5f80;
+    --sec: #4b1286;
+    --lav: #E2D1F9;
+    --lavtxt: #5900B3;
+    --icon: #7a1fd1;
+    --head: #9900FF;
+  }
+
+  * { box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
+  body { margin: 0; padding: 24px 12px; background: var(--page); }
+  button { font: inherit; border: 0; cursor: pointer; }
+
+  .stage { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; }
+
+  /* ---------- moldura do celular ---------- */
+  .phone {
+    position: relative;
+    width: 360px; max-width: 100%; height: 740px;
+    border: 6px solid #120a1c; border-radius: 34px;
+    background: var(--head);
+    overflow: hidden;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, .3);
+  }
+  .scroll { position: absolute; inset: 0; overflow-y: auto; }
+
+  /* ---------- modo escuro (CSS puro, ligado pelo switch) ---------- */
+  body:has(#dk:checked) .phone {
+    --sheet: #1c1626; --row: #2a2236; --ink: #f3ecff; --muted: #b9aed0;
+    --sec: #d7b6ff; --lav: #3a2a52; --lavtxt: #e2d1f9; --icon: #c58bff; --head: #5b0f99;
+  }
+
+  /* ---------- cabeçalho roxo ---------- */
+  .hd {
+    position: relative; height: 84px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hd::before {
+    content: ""; position: absolute; left: -40px; top: -40px;
+    width: 120px; height: 120px; border-radius: 50%; background: rgba(255, 255, 255, .25);
+  }
+  .hd::after {
+    content: ""; position: absolute; right: 0; top: 0; width: 100px; height: 100%;
+    background: rgba(255, 255, 255, .25);
+    clip-path: polygon(60% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .hd h2 { position: relative; z-index: 1; margin: 0; font-size: 1.15rem; color: #1b0b33; }
+  .hb {
+    position: absolute; z-index: 2; top: 50%; transform: translateY(-50%);
+    width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--lav); color: var(--lavtxt);
+  }
+  .hb.l { left: 14px; }
+  .hb.r { right: 14px; background: none; color: #1b0b33; }
+
+  /* ---------- folha branca ---------- */
+  .sheet {
+    min-height: calc(100% - 84px); padding: 16px 14px 28px;
+    border-radius: 26px 26px 0 0;
+    background: var(--sheet); color: var(--ink);
+  }
+  .sheet h3.s { margin: 16px 0 7px; font-size: .95rem; color: var(--sec); }
+  .sheet h3.s:first-child { margin-top: 0; }
+  .grp { display: grid; gap: 4px; }
+
+  /* ---------- linhas da lista ---------- */
+  .row {
+    display: flex; align-items: center; gap: 11px; width: 100%;
+    padding: 9px 11px; border-radius: 10px; text-align: left;
+    background: var(--row); color: var(--ink);
+  }
+  .row .ic { width: 22px; display: grid; place-items: center; color: var(--icon); }
+  .tx { flex: 1; display: grid; min-width: 0; }
+  .tx b { font-size: .78rem; }
+  .tx small { font-size: .68rem; color: var(--muted); }
+
+  /* ---------- ícones (sprite SVG) ---------- */
+  svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .row > svg { width: 15px; height: 15px; }
+
+  /* ---------- switch ---------- */
+  .sw {
+    appearance: none; -webkit-appearance: none;
+    position: relative; flex: none; width: 46px; height: 26px; margin: 0;
+    border-radius: 13px; background: #cfc3e0; cursor: pointer;
+  }
+  .sw::before {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s;
+  }
+  .sw:checked { background: #9900FF; }
+  .sw:checked::before { transform: translateX(20px); }
+
+  /* ---------- botão largo ---------- */
+  .wide {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; height: 42px; margin-top: 16px; border-radius: 12px;
+    background: var(--lav); color: var(--lavtxt); font-weight: 700; font-size: .82rem;
+  }
+
+  /* ---------- perfil ---------- */
+  .who { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+  .who h4 { margin: 0; font-size: 1.2rem; }
+  .who p { margin: 2px 0 0; font-size: .74rem; color: var(--muted); }
+  .av {
+    position: relative; flex: none; width: 92px; height: 92px; border-radius: 50%;
+    display: grid; place-items: center; background: var(--lav); color: var(--icon);
+  }
+  .av > svg { width: 50px; height: 50px; fill: currentColor; stroke: none; }
+  .cam {
+    position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px;
+    border: 3px solid var(--sheet); border-radius: 50%;
+    display: grid; place-items: center; background: #4b1286; color: #fff;
+  }
+  .cam svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+
+<!-- Ícones (sprite): usados com <svg><use href="#nome"/></svg> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></symbol>
+  <symbol id="pal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="11" r="1"/></symbol>
+  <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 2-2.5 2-2.5 4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/></symbol>
+  <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="out" viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
+  <symbol id="cam" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 7l1.5-3h5L16 7"/></symbol>
+  <symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></symbol>
+  <symbol id="edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+</svg>
+
+<main class="stage">
+
+  <!-- ================= CONFIGURAÇÕES ================= -->
+  <div class="phone">
+    <div class="scroll">
+      <header class="hd">
+        <button class="hb l" aria-label="Voltar"><svg aria-hidden="true"><use href="#back"/></svg></button>
+        <h2>Configurações</h2>
+      </header>
+
+      <section class="sheet">
+        <h3 class="s">Conta</h3>
+        <div class="grp">
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#user"/></svg></span><span class="tx"><b>Perfil</b><small>Veja e edite suas informações</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#lock"/></svg></span><span class="tx"><b>Privacidade</b><small>Gerencie seus dados</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#bell"/></svg></span><span class="tx"><b>Notificações</b><small>Escolha o que receber</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+        </div>
+
+        <h3 class="s">Aplicativo</h3>
+        <div class="grp">
+          <label class="row"><span class="ic"><svg aria-hidden="true"><use href="#pal"/></svg></span><span class="tx"><b>Modo escuro</b><small>Altere o tema do app</small></span><input type="checkbox" class="sw" id="dk"></label>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#globe"/></svg></span><span class="tx"><b>Idioma</b><small>Português (BR)</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <label class="row"><span class="ic"><svg aria-hidden="true"><use href="#pin"/></svg></span><span class="tx"><b>Localização</b><small>Permita o acesso ao seu local</small></span><input type="checkbox" class="sw" checked></label>
+        </div>
+
+        <h3 class="s">Suporte</h3>
+        <div class="grp">
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#help"/></svg></span><span class="tx"><b>Ajuda</b><small>Tire suas dúvidas</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#chat"/></svg></span><span class="tx"><b>Fale conosco</b><small>Envie sua mensagem</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#info"/></svg></span><span class="tx"><b>Sobre o app</b><small>Versão 1.0.0</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+        </div>
+
+        <button class="wide"><svg aria-hidden="true"><use href="#out"/></svg> Sair da conta</button>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= PERFIL ================= -->
+  <div class="phone">
+    <div class="scroll">
+      <header class="hd">
+        <button class="hb l" aria-label="Voltar"><svg aria-hidden="true"><use href="#back"/></svg></button>
+        <h2>Perfil</h2>
+        <button class="hb r" aria-label="Notificações"><svg aria-hidden="true"><use href="#bell"/></svg></button>
+      </header>
+
+      <section class="sheet">
+        <div class="who">
+          <div class="av">
+            <svg aria-hidden="true"><use href="#user"/></svg>
+            <button class="cam" aria-label="Alterar foto"><svg aria-hidden="true"><use href="#cam"/></svg></button>
+          </div>
+          <div>
+            <h4>Ana Clara</h4>
+            <p>Clara@email.com</p>
+          </div>
+        </div>
+
+        <h3 class="s">Minhas informações</h3>
+        <div class="grp">
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#user"/></svg></span><span class="tx"><b>Nome</b><small>Ana Clara</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#mail"/></svg></span><span class="tx"><b>E-mail</b><small>Clara@email.com</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#phone"/></svg></span><span class="tx"><b>Telefone</b><small>(11) 98765-4321</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+        </div>
+
+        <h3 class="s">Preferências</h3>
+        <div class="grp">
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#star"/></svg></span><span class="tx"><b>Linhas favoritas</b><small>Gerencie suas linhas preferidas</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+          <button class="row"><span class="ic"><svg aria-hidden="true"><use href="#pin"/></svg></span><span class="tx"><b>Endereço padrão</b><small>Defina um endereço padrão</small></span><svg aria-hidden="true"><use href="#chev"/></svg></button>
+        </div>
+
+        <button class="wide"><svg aria-hidden="true"><use href="#edit"/></svg> Editar perfil</button>
+      </section>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>
