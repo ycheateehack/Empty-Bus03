@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linhas 201 e 307 – Ocupação de ônibus</title>
+<style>
+:root {
+  --bg: #0f0f12;
+  --purple: #8a1fe8;
+  --purple-chip: #6a2bd8;
+  --line: #b9a4ff;
+  --blue: #1f3bff;
+  --stop: #2b3bff;
+  --card: #f1f4f6;
+  --ink: #14141a;
+  --ink-soft: #4a4a57;
+  --white: #ffffff;
+  --red: #ff6b6b;
+  --green: #3ddc84;
+  --track: rgba(255, 255, 255, 0.28);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--font);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px 16px;
+}
+
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--white); outline-offset: 2px; }
+
+/* ---------- Tela ---------- */
+.screen {
+  width: 390px;
+  max-width: 100%;
+  min-height: 844px;
+  background: var(--purple);
+  border-radius: 28px;
+  padding: 28px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  color: var(--white);
+}
+
+/* ---------- Cabeçalho ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar h1 { margin: 0; font-size: 22px; font-weight: 700; }
+
+.btn-back {
+  width: 44px; height: 44px;
+  margin-left: -10px;
+  border: 0;
+  background: transparent;
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-fav {
+  width: 44px; height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--white);
+  color: #3b0a78;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- Cartão do ônibus ---------- */
+.bus-card {
+  margin-top: 22px;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 18px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.bus-badge {
+  width: 56px; height: 48px;
+  border-radius: 10px;
+  color: var(--white);
+  font-size: 18px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.bus-badge.blue { background: #1252d6; }
+.bus-badge.green { background: #2f6b3a; }
+
+.bus-info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.bus-name { font-size: 17px; font-weight: 700; }
+.bus-dir { font-size: 13px; color: var(--ink-soft); }
+
+.status-chip {
+  margin-top: 8px;
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  border-radius: 14px;
+  padding: 5px 12px;
+}
+.status-chip.full { background: #ffd9d6; color: #a3191b; }
+.status-chip.empty { background: #d7f7e3; color: #0f6b35; }
+
+.bus-eta {
+  display: flex; align-items: center; gap: 4px;
+  padding-top: 4px;
+  font-size: 16px; font-weight: 600;
+}
+
+/* ---------- Ocupação ---------- */
+.section-title { margin: 28px 0 0; font-size: 18px; font-weight: 700; }
+
+.meter { margin-top: 12px; display: flex; gap: 8px; }
+.meter span { flex: 1; height: 8px; border-radius: 4px; background: var(--track); }
+.meter.full span:not(.off) { background: var(--red); }
+.meter.empty span:not(.off) { background: var(--green); }
+
+.meter-note {
+  margin: 12px 0 0;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px;
+}
+
+/* ---------- Reportar lotação ---------- */
+.report {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.report h2 { margin: 0; font-size: 14px; font-weight: 700; }
+.report p { margin: 2px 0 0; font-size: 12px; opacity: 0.9; }
+.report-options { margin-top: 12px; display: flex; gap: 8px; }
+
+.report-btn {
+  flex: 1;
+  height: 58px;
+  border: 0;
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px;
+}
+.report-btn .label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+}
+.report-btn .dot { width: 10px; height: 10px; border-radius: 50%; }
+.report-btn .count { font-size: 12px; font-weight: 500; }
+
+.report-btn.empty { background: #d7f7e3; color: #0f5a2e; }
+.report-btn.empty .dot { background: #1fa855; }
+.report-btn.moderate { background: #fff1c2; color: #6b4a00; }
+.report-btn.moderate .dot { background: #e5a400; }
+.report-btn.full { background: #ffd9d6; color: #8f1417; }
+.report-btn.full .dot { background: #d92d30; }
+
+.report-total { margin-top: 10px; font-size: 12px; opacity: 0.9; }
+
+/* ---------- Itinerário ---------- */
+.route-title { margin: 28px 0 0; font-size: 14px; font-weight: 700; }
+
+.route {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: 14px;
+}
+.route::before {
+  content: "";
+  position: absolute;
+  left: 13px; top: 14px; bottom: 14px;
+  width: 3px;
+  background: var(--line);
+}
+.stop {
+  position: relative;
+  display: flex; align-items: center; gap: 16px;
+  font-size: 14px;
+}
+.stop.end { font-weight: 700; }
+
+.pin {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pin::after {
+  content: "";
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--stop);
+}
+.stop.end .pin::after { width: 28px; height: 28px; border-width: 5px; }
+
+.tag {
+  background: var(--purple-chip);
+  font-size: 12px; font-weight: 500;
+  border-radius: 12px;
+  padding: 4px 12px;
+}
+
+/* ---------- Botão mapa ---------- */
+.btn-map {
+  margin-top: 18px;
+  height: 52px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LINHA 201 ===================== -->
+<main class="screen" aria-label="Linha 201">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="btn-back" aria-label="Voltar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </button>
+      <h1>Linha 201</h1>
+    </div>
+    <button class="btn-fav" aria-label="Favoritar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+    </button>
+  </header>
+
+  <section class="bus-card">
+    <div class="bus-badge blue">201</div>
+    <div class="bus-info">
+      <span class="bus-name">Terminal Central</span>
+      <span class="bus-dir">Direção: Centro</span>
+      <span class="status-chip full">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 14.5c2.8.2 5 2.4 5 5.5"/></svg>
+        Cheio
+      </span>
+    </div>
+    <div class="bus-eta">3 min
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </div>
+  </section>
+
+  <h2 class="section-title">Ocupação de ônibus</h2>
+  <div class="meter full" role="img" aria-label="Ocupação: 4 de 5 níveis">
+    <span></span><span></span><span></span><span></span><span class="off"></span>
+  </div>
+  <p class="meter-note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8z"/></svg>
+    Ainda há espaço para ficar em pé
+  </p>
+
+  <section class="report" aria-labelledby="rep-201">
+    <h2 id="rep-201">Reportar lotação</h2>
+    <p>Ajude outros passageiros: como está o ônibus agora?</p>
+    <div class="report-options">
+      <button class="report-btn empty"><span class="label"><span class="dot"></span>Vazio</span><span class="count">1 pessoa</span></button>
+      <button class="report-btn moderate"><span class="label"><span class="dot"></span>Moderado</span><span class="count">4 pessoas</span></button>
+      <button class="report-btn full"><span class="label"><span class="dot"></span>Cheio</span><span class="count">22 pessoas</span></button>
+    </div>
+    <div class="report-total">27 pessoas reportaram nos últimos 15 min</div>
+  </section>
+
+  <h2 class="route-title">Itinerário</h2>
+  <ol class="route">
+    <li class="stop end"><span class="pin"></span>Terminal Central<span class="tag">Início</span></li>
+    <li class="stop"><span class="pin"></span>Av. Brasil</li>
+    <li class="stop"><span class="pin"></span>Praça da Liberdade</li>
+    <li class="stop"><span class="pin"></span>Hospital Municipal</li>
+    <li class="stop end"><span class="pin"></span>Centro<span class="tag">Fim</span></li>
+  </ol>
+
+  <button class="btn-map">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></svg>
+    Ver no mapa
+  </button>
+</main>
+
+<!-- ===================== LINHA 307 ===================== -->
+<main class="screen" aria-label="Linha 307">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="btn-back" aria-label="Voltar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </button>
+      <h1>Linha 307</h1>
+    </div>
+    <button class="btn-fav" aria-label="Favoritar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+    </button>
+  </header>
+
+  <section class="bus-card">
+    <div class="bus-badge green">307</div>
+    <div class="bus-info">
+      <span class="bus-name">Jardim das Flores</span>
+      <span class="bus-dir">Direção: Centro</span>
+      <span class="status-chip empty">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 14.5c2.8.2 5 2.4 5 5.5"/></svg>
+        Vazio
+      </span>
+    </div>
+    <div class="bus-eta">3 min
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </div>
+  </section>
+
+  <h2 class="section-title">Ocupação de ônibus</h2>
+  <div class="meter empty" role="img" aria-label="Ocupação: 4 de 5 níveis">
+    <span></span><span></span><span></span><span></span><span class="off"></span>
+  </div>
+  <p class="meter-note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8z"/></svg>
+    Há muitos assentos disponíveis
+  </p>
+
+  <section class="report" aria-labelledby="rep-307">
+    <h2 id="rep-307">Reportar lotação</h2>
+    <p>Ajude outros passageiros: como está o ônibus agora?</p>
+    <div class="report-options">
+      <button class="report-btn empty"><span class="label"><span class="dot"></span>Vazio</span><span class="count">19 pessoas</span></button>
+      <button class="report-btn moderate"><span class="label"><span class="dot"></span>Moderado</span><span class="count">3 pessoas</span></button>
+      <button class="report-btn full"><span class="label"><span class="dot"></span>Cheio</span><span class="count">0 pessoas</span></button>
+    </div>
+    <div class="report-total">22 pessoas reportaram nos últimos 15 min</div>
+  </section>
+
+  <h2 class="route-title">Itinerário</h2>
+  <ol class="route">
+    <li class="stop end"><span class="pin"></span>Jardim das Flores<span class="tag">Início</span></li>
+    <li class="stop"><span class="pin"></span>Rua das Acácias</li>
+    <li class="stop"><span class="pin"></span>Escola Estadual</li>
+    <li class="stop"><span class="pin"></span>Mercado Público</li>
+    <li class="stop end"><span class="pin"></span>Centro<span class="tag">Fim</span></li>
+  </ol>
+
+  <button class="btn-map">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></svg>
+    Ver no mapa
+  </button>
+</main>
+
+</body>
+</html>
